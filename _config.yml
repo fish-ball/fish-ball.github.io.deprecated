@@ -57,7 +57,13 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  技术: tech
+  后台: background
+  日志: daily
 tag_map:
+  后台: background
+  心情: mood
+  编程: programming
 
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
