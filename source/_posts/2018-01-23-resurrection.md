@@ -5,6 +5,7 @@ categories:
 - 日志
 tags:
 - 心情
+- 计划
 ---
 
 ## 开博纪事
@@ -101,6 +102,9 @@ tags:
 【在读】
 
 * 《Java RESTful Web Service 实战》 -- ISBN 978-7-111-54213-1
+* 《Struts2+Spring4+Hibernate整合开发（第4版）》 -- ISBN 978-7-121-24253-3
+* 《Spring+MyBatis企业应用实战》 -- ISBN 978-7-121-30421-7
+* 《人件（英文版第3版）》 -- ISBN 978-7-111-51798-6
 
 #### 技术栈学习进展
 
