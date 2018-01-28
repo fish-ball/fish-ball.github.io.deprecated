@@ -482,7 +482,339 @@ Servlet在第一次收到请求的时候调用`init()`方法，然后获取的�
 
 内容也是自己脑补和查阅好了，这里只列个索引。
 
+#### Filter
 
+Filter相当于Django中的middleware，是一个Http请求和响应的拦截器，可以在Servlet处理请求之前获取Request对象进行操作，或者Response输出到客户端之前进行操作。
+
+一般定义一个Filter需要两步：
+
+* 创建Filter处理类
+* 使用`@WebFilter`注解或者`web.xml`文件中配置Filter
+
+配置项包括如下：
+
+* asyncSupported
+* dispatcherTypes
+* displayName
+* filterName
+* initParams
+* servletParams
+* urlPatterns/value
+
+给一个典型的例子：
+
+```
+package com.example.hello;
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
+@WebFilter(filterName = "log", urlPatterns = {"/*"})
+public class MyFilter implements Filter {
+    private FilterConfig config;
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        config = filterConfig;
+    }
+
+    @Override
+    public void destroy() {
+        config = null;
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest,
+                         ServletResponse servletResponse,
+                         FilterChain filterChain) throws IOException, ServletException {
+        // 转换为 HttpServletRequest
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        // 输出请求路径
+        System.out.println(">>>>> " + request.getServletPath());
+        // 继续放行
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+}
+```
+
+注意，配置好的Filter会对所有匹配路径的jsp或者其他Servlet生效。
+
+#### Listener
+
+Servlet API提供了大量监听器监听各种事件，这时候我们可以使用Listener捕获并且处理这些事件。
+
+Listener的创建和注册也是类似Filter：
+
+* 创建Listener处理类
+* 使用`@WebListener`注解或者`web.xml`文件中配置
+
+常用的事件监听器接口有：
+
+* ServletContextListener: 监听Web应用的启动与关闭
+* ServletContextAttributeListener: 监听ServletContext范围(application)内属性的改变
+* ServletRequestListener: 监听用户请求
+* ServletRequestAttributeListener: 监听ServletRequest范围(request)内属性的改变
+* ServletSessionListener: 监听用户session开始和结束
+* ServletSessionAttributeListener: 监听HttpSession范围(session)内属性的改变
+
+也举个例子：
+
+```java
+package com.example.hello;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
+@WebListener
+public class MyListener implements ServletContextListener {
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        ServletContext application = servletContextEvent.getServletContext();
+        String param = application.getInitParameter("param");
+        System.out.println(param);
+        System.out.println("Servlet started");
+    }
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    }
+}
+```
+
+#### Struts
+
+这部分由于暂时不需要使用跳过
+
+#### Hibernate
+
+Hibernate是一个ORM，而MyBatis并不纯粹是一个ORM，如果想使用更纯粹的对象操作方式处理持久化模型类，还是更适合使用Hibernate。
+
+Hibernate具备如下特点：
+
+* 实现JPA规范
+* 低侵入式实体类（不要求实体类实现任何接口）
+* 使用关系式数据库
+* 支持多种数据库驱动（这点和Django是一样的）
+* 面向对象的建模、操作
+
+基本映射方式：
+
+* 数据表映射类（持久化类、Model类或者叫实体类）
+* 数据行映射为对象（Model类的实例）
+* 数据表的字段映射为对象的属性（注意不是字段，因此应实现get/set方法）
+
+##### 在Maven中添加Hibernate依赖
+
+<https://mvnrepository.com/artifact/org.hibernate/hibernate-core>
+
+```xml
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <!--<version>5.2.10.Final</version>-->
+    <version>4.3.11.Final</version>
+</dependency>
+```
+
+注意目前最新的Hibernate版本是5.3，5和4之间差异还是很大，按照教材建议，还是使用4会好处理一些。
+
+##### 定义持久化类
+
+举个简单的例子：
+
+```java
+package com.example.hello.model;
+
+import lombok.Data;
+
+import javax.persistence.*;
+
+@Entity
+@Data
+@Table(name = "core_article")
+public class Article {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+
+    private String content;
+}
+```
+
+这只是一个很基础的类，关键在于以下几点：
+
+* `@Entity`声明这是Hibernate的一个持久化类
+* `@Table`指定映射到的数据库表名
+* `@Id`声明了数据表的主键
+* `@GeneratedValue`指定主键生成策略
+
+这里其实我们应当为所有的私有字段声明getter和setter，但是我们使用了lombok这个库提供的`@Data`注解自动完成了这一个工作，下面这段可以将lombok以来加入`pom.xml`：
+
+```xml
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.16.18</version>
+</dependency>
+```
+
+##### Hibernate配置
+
+配置其实是最基本的东西，到底Hibernate用什么数据库，用哪里的数据库，这些信息都必须配置。
+
+我们可以使用`*.properties`文件进行配置，也可以用`hibernate.cfg.xml`进行配置。
+
+> 注意：在Maven项目中，这些配置文件需要放在`/src/main/resources`目录下
+
+###### hibernate.cfg.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- 数据库连接设置 -->
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://127.0.0.1:3306/webdemo?useUnicode=true&amp;characterEncoding=utf8</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">root</property>
+        <!-- 自动创建数据表 -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <!-- 指定连接池的最大最小连接数 -->
+        <property name="hibernate.c3p0.max_size">20</property>
+        <property name="hibernate.c3p0.min_size">1</property>
+        <!-- 指定连接池的超时时长 -->
+        <property name="hibernate.c3p0.timeout">5000</property>
+        <!-- 指定连接池最大缓存的语句数量 -->
+        <property name="hibernate.c3p0.max_statements">100</property>
+        <property name="hibernate.c3p0.idle_test_period">3000</property>
+        <property name="hibernate.c3p0.acquire_increment">2</property>
+        <property name="hibernate.c3p0.validate">true</property>
+        <!-- 指定数据库方言 -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <!-- 显示持久化操作生成的SQL -->
+        <property name="hibernate.show_sql">true</property>
+        <!-- 将SQL脚本格式化之后输出 -->
+        <property name="hibernate.format_sql">true</property>
+        <!-- 声明所有持久化的类名 -->
+        <mapping class="com.example.hello.model.Article"/>
+    </session-factory>
+</hibernate-configuration>
+```
+
+###### 一个简单的使用例子
+
+下面这段演示了如何插入一条数据，注意，所有的String自动映射成了`varchar(255)`。
+
+直接将这段代码放在任何一个类里面，然后用IntellijIDEA右键运行该文件就可以看到，数据表自动被创建并且插入了这条数据。
+
+```java
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration().configure();
+        ServiceRegistry serviceRegistry =
+                new StandardServiceRegistryBuilder().applySettings(conf.getProperties()).build();
+        SessionFactory sessionFactory = conf.buildSessionFactory(serviceRegistry);
+        Session session = sessionFactory.openSession();
+        Transaction trans = session.beginTransaction();
+        Article article = new Article();
+        article.setTitle("第一篇文章");
+        article.setContent("你好，世界");
+        session.save(article);
+        trans.commit();
+        session.close();
+        sessionFactory.close();
+    }
+```
+
+##### PO对象
+
+一般的JavaBean对象我们称为POJO(Plain Old Java Object)，而持久化类我们称为PO(Persistent Object)。可见我们前面经过`@Entity`注解之后获得的Article类就是一个PO对象。
+
+PO对象有如下三种状态：
+
+* 瞬态：没有与Session关联过，即不存在数据行与对象对应
+* 持久化：与Session关联，并且数据是同步的
+* 托管：与Session关联，但是由于数据更新等原因数据不同步的状态
+
+新创建的PO或者`delete()`之后的PO属于瞬态；
+
+刚从数据库中获取出来的或者是执行了`save()`或者`update()`同步到数据库的PO属于持久化状态；
+
+关闭了session或者做出了属性修改的情况下属于脱管状态。
+
+##### PO对象操作
+
+PO对象要通过Session对象进行操作，可以参见上面的代码，主要的增删查改功能如下实现：
+
+```
+    // 新增操作
+    // 创建一个瞬态的 PO 并且设定内容
+    Article article = new Article();
+    article.setTitle("第一篇文章");
+    article.setContent("随便码点文字");
+    // 将 PO 持久化到数据库，会产生 create 语句
+    session.save(article);
+    // 下面的 persist 方法和 save 一样，不同的是 save 有返回值，persist 没有
+    // session.persist(article);
+    // 插入之后可以获取到自动生成的 Id
+    System.out.println(article.getId());
+
+    // 也可以在 save 或者 persist 方法的第二个参数手动指定主键值进行插入
+    Article article2 = new Article();
+    article2.setTitle("第二篇文章");
+    article2.setContent("搞点新意思");
+    // 这样子可以手动指定主键值，persist 方法也一样
+    session.save(article2, 22);
+
+    // 查询操作
+    // 根据主键查询，成功获取回来之后是持久化状态
+    Article article3 = session.load(Article.class, 22);
+
+    // 修改操作
+    // 修改完之后依然是持久化状态，因为与 session 是保持同步的
+    article3.setTitle("改个好点的名字");
+    // 要提交到数据库，需要这样
+    session.flush();
+
+    // 删除操作
+    // 删除之后，article 变成瞬态
+    session.delete(article)
+
+    // 关掉session之后，这几个article对象全部变成脱管态
+    session.close();
+    // 修改脱管对象
+    article3.setContent("内容也要修改一下");
+    // 再开一个 session
+    Session session2 = sessionFactory.openSession();
+    // 用新的session保存托管对象，对象重新回归持久化状态
+    session2.update(article3);
+    // 会自动判别article3是否创建过并且自动选择插入还是更新
+    session3.updateOrSave(article3);
+    // 这几个方法都会返回 article 对象，不同的是 merge 方法之后 article3 依然是脱管态
+    session3.merge(article3);
+```
+
+##### JPA常用注解
+
+* @Entity: PO实体类声明
+* @Table: 指定持久化的数据库表，支持如下参数：
+  * catalog
+  * indexes
+  * name: 表名，如果不指定表名与类名相同
+  * schema
+  * uniqueConstraints
+* @UniqueConstraint: 可以指定多个唯一索引列
+
+
+* @Unique
 
 ### 特殊要点
 
@@ -491,11 +823,11 @@ Servlet在第一次收到请求的时候调用`init()`方法，然后获取的�
 ```
 # 注意下面 {} 里面的是要创建的目标项目的属性，根据情况指定
 mvn archetype:generate \
--DgroupId={org.crazyit} \
--DartifactId={struts2qs} \
--Dpackage={org.crazyit.struts2qs} \
--DarchetypeArtifactId=maven-archetype-webapp \
--DinteractMode=false
+    -DgroupId={org.crazyit} \
+    -DartifactId={struts2qs} \
+    -Dpackage={org.crazyit.struts2qs} \
+    -DarchetypeArtifactId=maven-archetype-webapp \
+    -DinteractMode=false
 ```
 
 
