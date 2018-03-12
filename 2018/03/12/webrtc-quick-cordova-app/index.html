@@ -5,20 +5,20 @@
   
 
   
-  <title>Java-Rest-Framework实践实录（一）——引言 | 呆滞的慢板</title>
+  <title>快速部署WebRTC在Cordova/纯WEB环境实现视频对讲 | 呆滞的慢板</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Why Java, why not Java其实对于一个信誓旦旦的Python拥护者，不会写Java多少会有些心虚，有些底气不足，又或者更残酷的说，太水了。 如果说你喜欢一样东西，或者说不喜欢某一样东西，你最好对它有一个完完全全的了解之后才发表意见。 既然如此，Java这趟浑水，是非趟不可了，只有知道在另一个世界自己的活法，才能学会如何自己如何在当下的世界中活得更好。 这不就是佛系的教义所在吗？">
-<meta name="keywords" content="Java,编程,REST,RESTful,后台">
+  <meta name="description" content="题记目前在项目中需要做一个基于移动APP的视频对讲的系统，整体架构采用了Cordova的WEB应用环境，因此需要技术选型。 由于采用Cordova，其实主流的协议基本都可以用，大不了写Cordova插件分别接iOS和Android原生。 由于应用场景是物业对讲，因此可以排除类似直播类别的一对多或者多对多的多终端连接，只考虑少量的终端对接即可。 于是在少量搜索中逐渐定位到WebRTC的方案，简单了解">
+<meta name="keywords" content="编程,WEB,WebRTC,视频流,前端,Cordova,Javascript,NodeJs">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java-Rest-Framework实践实录（一）——引言">
-<meta property="og:url" content="http://fish-ball.github.io/2018/01/24/java-rest-framework-1/index.html">
+<meta property="og:title" content="快速部署WebRTC在Cordova&#x2F;纯WEB环境实现视频对讲">
+<meta property="og:url" content="http://fish-ball.github.io/2018/03/12/webrtc-quick-cordova-app/index.html">
 <meta property="og:site_name" content="呆滞的慢板">
-<meta property="og:description" content="Why Java, why not Java其实对于一个信誓旦旦的Python拥护者，不会写Java多少会有些心虚，有些底气不足，又或者更残酷的说，太水了。 如果说你喜欢一样东西，或者说不喜欢某一样东西，你最好对它有一个完完全全的了解之后才发表意见。 既然如此，Java这趟浑水，是非趟不可了，只有知道在另一个世界自己的活法，才能学会如何自己如何在当下的世界中活得更好。 这不就是佛系的教义所在吗？">
+<meta property="og:description" content="题记目前在项目中需要做一个基于移动APP的视频对讲的系统，整体架构采用了Cordova的WEB应用环境，因此需要技术选型。 由于采用Cordova，其实主流的协议基本都可以用，大不了写Cordova插件分别接iOS和Android原生。 由于应用场景是物业对讲，因此可以排除类似直播类别的一对多或者多对多的多终端连接，只考虑少量的终端对接即可。 于是在少量搜索中逐渐定位到WebRTC的方案，简单了解">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-01-26T15:38:46.654Z">
+<meta property="og:updated_time" content="2018-03-12T08:20:37.053Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java-Rest-Framework实践实录（一）——引言">
-<meta name="twitter:description" content="Why Java, why not Java其实对于一个信誓旦旦的Python拥护者，不会写Java多少会有些心虚，有些底气不足，又或者更残酷的说，太水了。 如果说你喜欢一样东西，或者说不喜欢某一样东西，你最好对它有一个完完全全的了解之后才发表意见。 既然如此，Java这趟浑水，是非趟不可了，只有知道在另一个世界自己的活法，才能学会如何自己如何在当下的世界中活得更好。 这不就是佛系的教义所在吗？">
+<meta name="twitter:title" content="快速部署WebRTC在Cordova&#x2F;纯WEB环境实现视频对讲">
+<meta name="twitter:description" content="题记目前在项目中需要做一个基于移动APP的视频对讲的系统，整体架构采用了Cordova的WEB应用环境，因此需要技术选型。 由于采用Cordova，其实主流的协议基本都可以用，大不了写Cordova插件分别接iOS和Android原生。 由于应用场景是物业对讲，因此可以排除类似直播类别的一对多或者多对多的多终端连接，只考虑少量的终端对接即可。 于是在少量搜索中逐渐定位到WebRTC的方案，简单了解">
   
     <link rel="alternate" href="/atom.xml" title="呆滞的慢板" type="application/atom+xml">
   
@@ -69,14 +69,14 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-java-rest-framework-1" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-webrtc-quick-cordova-app" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/01/24/java-rest-framework-1/" class="article-date">
-  <time datetime="2018-01-24T12:43:00.000Z" itemprop="datePublished">2018-01-24</time>
+    <a href="/2018/03/12/webrtc-quick-cordova-app/" class="article-date">
+  <time datetime="2018-03-12T15:37:00.000Z" itemprop="datePublished">2018-03-12</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/tech/">技术</a>►<a class="article-category-link" href="/categories/tech/background/">后台</a>►<a class="article-category-link" href="/categories/tech/background/Java/">Java</a>
+    <a class="article-category-link" href="/categories/tech/">技术</a>►<a class="article-category-link" href="/categories/tech/应用/">应用</a>►<a class="article-category-link" href="/categories/tech/应用/媒体流/">媒体流</a>
   </div>
 
   </div>
@@ -87,7 +87,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Java-Rest-Framework实践实录（一）——引言
+      快速部署WebRTC在Cordova/纯WEB环境实现视频对讲
     </h1>
   
 
@@ -95,36 +95,52 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Why-Java-why-not-Java"><a href="#Why-Java-why-not-Java" class="headerlink" title="Why Java, why not Java"></a>Why Java, why not Java</h2><p>其实对于一个信誓旦旦的Python拥护者，不会写Java多少会有些心虚，有些底气不足，又或者更残酷的说，太水了。</p>
-<p>如果说你喜欢一样东西，或者说不喜欢某一样东西，你最好对它有一个完完全全的了解之后才发表意见。</p>
-<p>既然如此，Java这趟浑水，是非趟不可了，只有知道在另一个世界自己的活法，才能学会如何自己如何在当下的世界中活得更好。</p>
-<p>这不就是佛系的教义所在吗？</p>
-<h2 id="How-Java"><a href="#How-Java" class="headerlink" title="How Java"></a>How Java</h2><p>其实在目前的项目积累中已经把该走的弯路都走了，也对好的设计走过一遭，现在要用Java来做的事情，无非是实现以前已经实践过的项目架构而已。</p>
-<p>所以，我们只需要瞄准RESTful和微服务即可，不需要MVC之类的东东。</p>
-<p>简要探索了一下，我们不需要Struts，目标的框架基本就是Jersey/Spring/Mybatis。</p>
-<p>至于微服务，我们可以以后在搞，先搞好RESTful。</p>
-<p>于是我们的首要目标，是做出能够与Django Rest Framework媲美的开发架构，于是至少要能够达到如下这几点：</p>
+        <h2 id="题记"><a href="#题记" class="headerlink" title="题记"></a>题记</h2><p>目前在项目中需要做一个基于移动APP的视频对讲的系统，整体架构采用了Cordova的WEB应用环境，因此需要技术选型。</p>
+<p>由于采用Cordova，其实主流的协议基本都可以用，大不了写Cordova插件分别接iOS和Android原生。</p>
+<p>由于应用场景是物业对讲，因此可以排除类似直播类别的一对多或者多对多的多终端连接，只考虑少量的终端对接即可。</p>
+<p>于是在少量搜索中逐渐定位到WebRTC的方案，简单了解之后发现这是一个纯WEB支持的视频流P2P对接方案，只要不涉及大量的连接，是一个很好的选择。</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>纯WEB原生支持，无需对接设备原生APP端</li>
+<li>完善的SDK和方便的后台部署（下文）</li>
+<li>P2P通讯的高效流畅</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>需要HTTPS（下文提及部署方法）</li>
+<li>连接太多性能不佳（我们的场景不需要）</li>
+<li>浏览器的兼容性问题（这个就看命了）</li>
+</ul>
+<h2 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h2><ol>
+<li><h5 id="各种实践的范例"><a href="#各种实践的范例" class="headerlink" title="各种实践的范例"></a>各种实践的范例</h5></li>
+</ol>
+<p>WebRTC-Experiment: <a href="https://github.com/muaz-khan/WebRTC-Experiment" target="_blank" rel="noopener">https://github.com/muaz-khan/WebRTC-Experiment</a></p>
+<p>这是一个母仓库，包含了各种独立组件的应用以及单元测试</p>
 <ol>
-<li>Model层的定义与Migration，模型方法在何处定义，是否可以实现manager</li>
-<li>Serializer层的功能如何实现</li>
-<li>ModelViewSet如何实现</li>
-<li>用户模型与登录验证层的实现</li>
+<li><h5 id="整合打包的前后台js程序"><a href="#整合打包的前后台js程序" class="headerlink" title="整合打包的前后台js程序"></a>整合打包的前后台js程序</h5></li>
 </ol>
-<p>难点在于，Java是强类型语言，这里其实就涉及到比较复杂以及高限制性的设计模式，而且还受限于各种底层框架的特性所限制。</p>
-<h2 id="计划路径"><a href="#计划路径" class="headerlink" title="计划路径"></a>计划路径</h2><ol>
-<li>学习Jersey框架了解基础的REST层定义方法</li>
-<li>学习Mybatis基础使用重塑模型层</li>
-<li>使用Spring框架整合这一切</li>
+<p>RTCMultiConnection: <a href="https://github.com/muaz-khan/RTCMultiConnection" target="_blank" rel="noopener">https://github.com/muaz-khan/RTCMultiConnection</a></p>
+<p>实际应用我们只用这个就够了，有对应的NPM包，这个项目包括了后台的Service，前端调用的代码以及Demo静态html页</p>
+<p>本文主要实践其实就是这个仓库的指引，附带一些过坑提示，因此直接看这篇基本也能完成目标</p>
+<ol>
+<li><h5 id="测试在线Demo"><a href="#测试在线Demo" class="headerlink" title="测试在线Demo"></a>测试在线Demo</h5></li>
 </ol>
-<p>这篇先抛砖引玉，下一篇开始记录Jersey框架实作。</p>
+<p>所有Demo: <a href="https://rtcmulticonnection.herokuapp.com/demos/" target="_blank" rel="noopener">https://rtcmulticonnection.herokuapp.com/demos/</a></p>
+<blockquote>
+<p>其实这个Demo我们通过下载<a href="https://github.com/muaz-khan/RTCMultiConnection" target="_blank" rel="noopener">TRCMultiConnection</a>项目也可以打开，<strong>但是由于很多浏览器只支持https或者本机IP才可能开启，因此简单本机部署在局域网内调不通</strong>，所以我们还是先用这个https来测试</p>
+</blockquote>
+<p>我们简单打开一个一对一的视频对聊，在任意两个支持视频和语音的终端打开链接：</p>
+<p><a href="https://rtcmulticonnection.herokuapp.com/demos/One-to-One.html" target="_blank" rel="noopener">https://rtcmulticonnection.herokuapp.com/demos/One-to-One.html</a></p>
+
+<p>看到网页打开之后，两边输入同一个房间ID，然后点击<em>Auto Open Or Join Room</em>，即可看到会话，太简单了有木有！！</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://fish-ball.github.io/2018/01/24/java-rest-framework-1/" data-id="cjenyjbr70001pgjxh4g5znf2" class="article-share-link">Share</a>
+      <a data-url="http://fish-ball.github.io/2018/03/12/webrtc-quick-cordova-app/" data-id="cjenyjbs60005pgjxhyj57la2" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/REST/">REST</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RESTful/">RESTful</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/background/">后台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">编程</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cordova/">Cordova</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NodeJs/">NodeJs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WEB/">WEB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebRTC/">WebRTC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">编程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/视频流/">视频流</a></li></ul>
 
     </footer>
   </div>
@@ -132,19 +148,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2018/01/25/java-rest-framework-2/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Java-Rest-Framework实践实录（二）——环境准备
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/01/23/resurrection/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/01/25/java-rest-framework-2/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">轮回的再一次启程</div>
+      <div class="article-nav-title">Java-Rest-Framework实践实录（二）——环境准备</div>
     </a>
   
 </nav>

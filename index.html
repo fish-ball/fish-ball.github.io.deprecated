@@ -69,6 +69,86 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-webrtc-quick-cordova-app" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/03/12/webrtc-quick-cordova-app/" class="article-date">
+  <time datetime="2018-03-12T15:37:00.000Z" itemprop="datePublished">2018-03-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/tech/">技术</a>►<a class="article-category-link" href="/categories/tech/应用/">应用</a>►<a class="article-category-link" href="/categories/tech/应用/媒体流/">媒体流</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/12/webrtc-quick-cordova-app/">快速部署WebRTC在Cordova/纯WEB环境实现视频对讲</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="题记"><a href="#题记" class="headerlink" title="题记"></a>题记</h2><p>目前在项目中需要做一个基于移动APP的视频对讲的系统，整体架构采用了Cordova的WEB应用环境，因此需要技术选型。</p>
+<p>由于采用Cordova，其实主流的协议基本都可以用，大不了写Cordova插件分别接iOS和Android原生。</p>
+<p>由于应用场景是物业对讲，因此可以排除类似直播类别的一对多或者多对多的多终端连接，只考虑少量的终端对接即可。</p>
+<p>于是在少量搜索中逐渐定位到WebRTC的方案，简单了解之后发现这是一个纯WEB支持的视频流P2P对接方案，只要不涉及大量的连接，是一个很好的选择。</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>纯WEB原生支持，无需对接设备原生APP端</li>
+<li>完善的SDK和方便的后台部署（下文）</li>
+<li>P2P通讯的高效流畅</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>需要HTTPS（下文提及部署方法）</li>
+<li>连接太多性能不佳（我们的场景不需要）</li>
+<li>浏览器的兼容性问题（这个就看命了）</li>
+</ul>
+<h2 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h2><ol>
+<li><h5 id="各种实践的范例"><a href="#各种实践的范例" class="headerlink" title="各种实践的范例"></a>各种实践的范例</h5></li>
+</ol>
+<p>WebRTC-Experiment: <a href="https://github.com/muaz-khan/WebRTC-Experiment" target="_blank" rel="noopener">https://github.com/muaz-khan/WebRTC-Experiment</a></p>
+<p>这是一个母仓库，包含了各种独立组件的应用以及单元测试</p>
+<ol>
+<li><h5 id="整合打包的前后台js程序"><a href="#整合打包的前后台js程序" class="headerlink" title="整合打包的前后台js程序"></a>整合打包的前后台js程序</h5></li>
+</ol>
+<p>RTCMultiConnection: <a href="https://github.com/muaz-khan/RTCMultiConnection" target="_blank" rel="noopener">https://github.com/muaz-khan/RTCMultiConnection</a></p>
+<p>实际应用我们只用这个就够了，有对应的NPM包，这个项目包括了后台的Service，前端调用的代码以及Demo静态html页</p>
+<p>本文主要实践其实就是这个仓库的指引，附带一些过坑提示，因此直接看这篇基本也能完成目标</p>
+<ol>
+<li><h5 id="测试在线Demo"><a href="#测试在线Demo" class="headerlink" title="测试在线Demo"></a>测试在线Demo</h5></li>
+</ol>
+<p>所有Demo: <a href="https://rtcmulticonnection.herokuapp.com/demos/" target="_blank" rel="noopener">https://rtcmulticonnection.herokuapp.com/demos/</a></p>
+<blockquote>
+<p>其实这个Demo我们通过下载<a href="https://github.com/muaz-khan/RTCMultiConnection" target="_blank" rel="noopener">TRCMultiConnection</a>项目也可以打开，<strong>但是由于很多浏览器只支持https或者本机IP才可能开启，因此简单本机部署在局域网内调不通</strong>，所以我们还是先用这个https来测试</p>
+</blockquote>
+<p>我们简单打开一个一对一的视频对聊，在任意两个支持视频和语音的终端打开链接：</p>
+<p><a href="https://rtcmulticonnection.herokuapp.com/demos/One-to-One.html" target="_blank" rel="noopener">https://rtcmulticonnection.herokuapp.com/demos/One-to-One.html</a></p>
+
+<p>看到网页打开之后，两边输入同一个房间ID，然后点击<em>Auto Open Or Join Room</em>，即可看到会话，太简单了有木有！！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://fish-ball.github.io/2018/03/12/webrtc-quick-cordova-app/" data-id="cjenyjbs60005pgjxhyj57la2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cordova/">Cordova</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NodeJs/">NodeJs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WEB/">WEB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebRTC/">WebRTC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">编程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/视频流/">视频流</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-java-rest-framework-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/01/25/java-rest-framework-2/" class="article-date">
@@ -117,7 +197,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://fish-ball.github.io/2018/01/25/java-rest-framework-2/" data-id="cjcw3f3dv0004fkjx840is1m9" class="article-share-link">Share</a>
+      <a data-url="http://fish-ball.github.io/2018/01/25/java-rest-framework-2/" data-id="cjenyjbs10004pgjx1mzo9mnq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/REST/">REST</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RESTful/">RESTful</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/background/">后台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">编程</a></li></ul>
@@ -181,7 +261,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://fish-ball.github.io/2018/01/24/java-rest-framework-1/" data-id="cjcw3f3dl0001fkjxsy6a18gw" class="article-share-link">Share</a>
+      <a data-url="http://fish-ball.github.io/2018/01/24/java-rest-framework-1/" data-id="cjenyjbr70001pgjxh4g5znf2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/REST/">REST</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RESTful/">RESTful</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/background/">后台</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/">编程</a></li></ul>
@@ -419,7 +499,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://fish-ball.github.io/2018/01/23/resurrection/" data-id="cjcw3f3d60000fkjxgl2aq0bf" class="article-share-link">Share</a>
+      <a data-url="http://fish-ball.github.io/2018/01/23/resurrection/" data-id="cjenyjbqs0000pgjxtrlgibyo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mood/">心情</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计划/">计划</a></li></ul>
@@ -441,7 +521,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/tech/">技术</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/tech/background/">后台</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/tech/background/Java/">Java</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/daily/">日志</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/tech/">技术</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/tech/background/">后台</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/tech/background/Java/">Java</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/tech/应用/">应用</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/tech/应用/媒体流/">媒体流</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/daily/">日志</a></li></ul>
     </div>
   </div>
 
@@ -451,7 +531,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/REST/">REST</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RESTful/">RESTful</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/background/">后台</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mood/">心情</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming/">编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计划/">计划</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cordova/">Cordova</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/">Javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NodeJs/">NodeJs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/REST/">REST</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RESTful/">RESTful</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WEB/">WEB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebRTC/">WebRTC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/background/">后台</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mood/">心情</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming/">编程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/视频流/">视频流</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/计划/">计划</a></li></ul>
     </div>
   </div>
 
@@ -461,7 +541,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/REST/" style="font-size: 20px;">REST</a> <a href="/tags/RESTful/" style="font-size: 20px;">RESTful</a> <a href="/tags/background/" style="font-size: 20px;">后台</a> <a href="/tags/mood/" style="font-size: 10px;">心情</a> <a href="/tags/programming/" style="font-size: 20px;">编程</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a>
+      <a href="/tags/Cordova/" style="font-size: 10px;">Cordova</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/NodeJs/" style="font-size: 10px;">NodeJs</a> <a href="/tags/REST/" style="font-size: 15px;">REST</a> <a href="/tags/RESTful/" style="font-size: 15px;">RESTful</a> <a href="/tags/WEB/" style="font-size: 10px;">WEB</a> <a href="/tags/WebRTC/" style="font-size: 10px;">WebRTC</a> <a href="/tags/前端/" style="font-size: 10px;">前端</a> <a href="/tags/background/" style="font-size: 15px;">后台</a> <a href="/tags/mood/" style="font-size: 10px;">心情</a> <a href="/tags/programming/" style="font-size: 20px;">编程</a> <a href="/tags/视频流/" style="font-size: 10px;">视频流</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a>
     </div>
   </div>
 
@@ -470,7 +550,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a></li></ul>
     </div>
   </div>
 
@@ -481,6 +561,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/03/12/webrtc-quick-cordova-app/">快速部署WebRTC在Cordova/纯WEB环境实现视频对讲</a>
+          </li>
         
           <li>
             <a href="/2018/01/25/java-rest-framework-2/">Java-Rest-Framework实践实录（二）——环境准备</a>
